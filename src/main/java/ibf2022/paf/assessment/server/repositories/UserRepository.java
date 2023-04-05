@@ -31,9 +31,8 @@ public class UserRepository {
         String sql = """
             insert into user (user_id, username, name) values (?,?,?)
                 """;
-        String uuid = UUID.randomUUID().toString().substring(0, 8);
-        user.setUserId(uuid);
-        jt.update(sql, uuid, user.getUsername(), user.getName()); // throws DataAccessException
-        return uuid;
+        user.setUserId(UUID.randomUUID().toString().substring(0, 8));
+        jt.update(sql, user.getUserId(), user.getUsername(), user.getName()); // throws DataAccessException
+        return user.getUserId();
     }
 }

@@ -2,8 +2,6 @@ package ibf2022.paf.assessment.server.models;
 
 import java.time.LocalDate;
 
-// TODO: Task 4
-
 public class Task {
     private String taskId;
     private String description;
