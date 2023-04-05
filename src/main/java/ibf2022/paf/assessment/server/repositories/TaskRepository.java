@@ -17,10 +17,10 @@ public class TaskRepository {
 
     public String insertTask(User user, Task task) {
         String sql = """
-            insert into task (task_id, description, priority, due_date, user_id) values (?, ?, ?, ?, ?),
+            insert into task (task_id, description, priority, due_date, user_id) values (?, ?, ?, ?, ?)
                 """;
         String uuid = UUID.randomUUID().toString().substring(0, 8);
-        jt.update(sql, uuid, task.getDescription(), task.getPriority(), task.getDueDate(), user.getUserId()); // throws DataAccessException
+        jt.update(sql, uuid, task.getDescription(), task.getPriority(), task.getDueDate(), user.getUserId()); // getUserId is null when upserting!
         return uuid;
     }
 }

@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,8 @@ public class TodoService {
             user = new User();
             user.setUsername(username);
             userRepo.insertUser(user);
+        } else {
+            user = optUser.get();
         }
 
         for (Task t : tasks) {
@@ -42,11 +46,19 @@ public class TodoService {
     }
 
     public List<Task> generateTasks(MultiValueMap<String, String> form) {
-        List<String> descriptions = form.get("description");
-        List<String> priorities = form.get("priority");
-        List<String> dueDates = form.get("dueDate");
+        List<List<String>> formFields = form.values().stream().collect(Collectors.toList());
+        Integer formSize = formFields.size();
+        
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        // Task fields are located in every 3rd field
+        Integer startRange = 1;
+        Integer endRange = formSize;
+
+        List<String> descriptions = filterEveryNthElement(startRange, endRange, 1, formFields);
+        List<String> priorities = filterEveryNthElement(startRange, endRange, 2, formFields);
+        List<String> dueDates = filterEveryNthElement(startRange, endRange, 0, formFields);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         List<Task> tasks = new LinkedList<>();
 
         for (int i = 0; i < descriptions.size(); i++) {
@@ -63,5 +75,12 @@ public class TodoService {
         }
 
         return tasks;
+    }
+
+    public List<String> filterEveryNthElement(Integer startInclusive, Integer endExclusive, Integer moduloByThree, List<List<String>> listToFilter) {
+        IntStream stream = IntStream.range(startInclusive, endExclusive);
+
+        // Since each form field is a List<String> with only one value, we shall call get(0) to get that value
+        return stream.filter(i -> i % 3 == moduloByThree).mapToObj(i -> listToFilter.get(i).get(0)).collect(Collectors.toList());
     }
 }
