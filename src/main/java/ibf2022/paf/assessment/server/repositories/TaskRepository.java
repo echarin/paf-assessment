@@ -1,7 +1,5 @@
 package ibf2022.paf.assessment.server.repositories;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -15,12 +13,11 @@ public class TaskRepository {
     @Autowired
     private JdbcTemplate jt;
 
-    public String insertTask(User user, Task task) {
+    public Integer insertTask(User user, Task task) {
         String sql = """
-            insert into task (task_id, description, priority, due_date, user_id) values (?, ?, ?, ?, ?)
+            insert into task (description, priority, due_date, user_id) values (?, ?, ?, ?)
                 """;
-        String uuid = UUID.randomUUID().toString().substring(0, 8);
-        jt.update(sql, uuid, task.getDescription(), task.getPriority(), task.getDueDate(), user.getUserId()); // getUserId is null when upserting!
-        return uuid;
+        jt.update(sql, task.getDescription(), task.getPriority(), task.getDueDate(), user.getUserId()); // getUserId is null when upserting!
+        return jt.queryForObject("select last_insert_id()", Integer.class);
     }
 }
