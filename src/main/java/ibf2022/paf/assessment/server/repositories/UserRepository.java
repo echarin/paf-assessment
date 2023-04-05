@@ -11,8 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import ibf2022.paf.assessment.server.models.User;
 
-// TODO: Task 3
-
 @Repository
 public class UserRepository {
 
