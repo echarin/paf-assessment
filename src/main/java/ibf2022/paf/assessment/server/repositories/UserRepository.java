@@ -20,7 +20,7 @@ public class UserRepository {
     private JdbcTemplate jt;
 
     public Optional<User> findUserByUsername(String username) {
-        String sql = "select * from user where username = ?";
+        String sql = "select * from user where name = ?";
         try {
             User user = jt.queryForObject(sql, BeanPropertyRowMapper.newInstance(User.class), username);
             return Optional.of(user);
@@ -31,8 +31,7 @@ public class UserRepository {
 
     public String insertUser(User user) {
         String sql = """
-            insert into user (user_id, username, nickname) values 
-            (?,?,?)
+            insert into user (user_id, username, name) values (?,?,?)
                 """;
         String uuid = UUID.randomUUID().toString().substring(0, 8);
         jt.update(sql, uuid, user.getUsername(), user.getName()); // throws DataAccessException
